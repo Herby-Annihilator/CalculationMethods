@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationMethods.Presentation.Blazor", "Presentation\Blazor\CalculationMethods.Presentation.Blazor\CalculationMethods.Presentation.Blazor.csproj", "{CC10BF19-8B79-49AD-A340-4C456ABD002C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculationMethods.Presentation.Blazor", "Presentation\Blazor\CalculationMethods.Presentation.Blazor\CalculationMethods.Presentation.Blazor.csproj", "{CC10BF19-8B79-49AD-A340-4C456ABD002C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationMethods.Core", "Core\CalculationMethods.Core\CalculationMethods.Core.csproj", "{32F978CC-A194-44CA-BC38-59060E84356C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculationMethods.Core", "Core\CalculationMethods.Core\CalculationMethods.Core.csproj", "{32F978CC-A194-44CA-BC38-59060E84356C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationMethods.Infrastructure", "Infrastructure\CalculationMethods.Infrastructure\CalculationMethods.Infrastructure.csproj", "{726AC014-9811-4971-9DCB-31E35C40CA0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculationMethods.Infrastructure", "Infrastructure\CalculationMethods.Infrastructure\CalculationMethods.Infrastructure.csproj", "{726AC014-9811-4971-9DCB-31E35C40CA0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

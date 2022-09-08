@@ -9,5 +9,26 @@ namespace CalculationMethods.Infrastructure.Entities.Double
 {
     public class DoubleMatrix : IMatrix<double>
     {
+        public double this[int row, int column] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public double ConditionNumber()
+        {
+            throw new NotImplementedException();
+        }
+
+        public double Determinant()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMatrix<double> Inverse()
+        {
+            throw new NotImplementedException();
+        }
+
+        public double Norm()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
