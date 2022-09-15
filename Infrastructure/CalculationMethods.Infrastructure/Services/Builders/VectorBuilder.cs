@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CalculationMethods.Core.Services
+namespace CalculationMethods.Infrastructure.Services.Builders
 {
-    public interface IGaussMethod
+    public class VectorBuilder
     {
-
     }
 }

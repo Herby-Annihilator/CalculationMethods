@@ -1,7 +1,26 @@
 ﻿@page "/lu_factorization"
 
-<h3>LUFactorization</h3>
+<MudText Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
+<MudExpansionPanel Text="Описание">
+    LU-разложение (LU-декомпозиция, LU-факторизация) — представление матрицы A в виде произведения двух матриц, A=LU, где L — нижняя треугольная матрица, а U — верхняя треугольная матрица.
+    LU-разложение используется для решения систем линейных уравнений, обращения матриц и вычисления определителя. LU-разложение существует только в том случае, когда матрица A обратима, а все ведущие (угловые) главные миноры матрицы A невырождены.
+    Этот метод является одной из разновидностей метода Гаусса.
+</MudExpansionPanel>
+
+<MudRadioGroup @bind-SelectedOption="@InputVarian">
+    <MudRadio Option="@Variant.ManualInput" Color="Color.Primary">Ручной ввод</MudRadio>
+    <MudRadio Option="@Variant.FromFile" Color="Color.Primary">Из файла</MudRadio>
+</MudRadioGroup>
+
+<MudTextField Label="Размерность" @bind-Value="_matrixSize"/>
+
+
 
 @code {
-
+    private int _matrixSize = 0;
+    public Variant InputVarian { get; set; } = Variant.ManualInput;
+    public enum Variant
+    {
+        FromFile, ManualInput
+    }
 }
