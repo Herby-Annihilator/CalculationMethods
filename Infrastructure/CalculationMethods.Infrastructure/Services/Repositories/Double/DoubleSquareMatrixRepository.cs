@@ -1,5 +1,5 @@
 ﻿using CalculationMethods.Core.Entities;
-using CalculationMethods.Core.Services;
+using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Infrastructure.Entities.Double;
 using System;
 using System.Collections.Generic;
@@ -7,18 +7,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CalculationMethods.Infrastructure.Services.Builders
+namespace CalculationMethods.Infrastructure.Services.Repositories.Double
 {
-    public class MatrixFromFileBuilder : IMatrixBuilder<double>
+    public class DoubleSquareMatrixRepository : IMatrixRepository<ISquareMatrix<double>, double>
     {
-        protected MatrixFromFileBuilderOptions options;
         protected string fileName;
-        public MatrixFromFileBuilder(string fileName, MatrixFromFileBuilderOptions options)
+        protected MatrixFromFileOptions options;
+
+        public DoubleSquareMatrixRepository(string fileName, MatrixFromFileOptions options)
         {
             this.fileName = fileName;
             this.options = options;
         }
-        public IMatrix<double> Build()
+
+        public bool Delete(ISquareMatrix<double> matrix)
+        {
+            Guid guid = Guid.NewGuid();
+            string tempFile = $"{fileName}_{guid}";
+            StreamReader reader = new StreamReader(fileName);
+            StreamWriter writer = new StreamWriter(tempFile);
+            string buffer;
+            while ((buffer = reader.ReadLine()) != null)
+            {
+                if (buffer == options.OpenTag)
+                {
+                    do
+                    {
+                        buffer = reader.ReadLine();
+                    } while (buffer != null && buffer != options.CloseTag);
+                    if (buffer == null)
+                        break;
+                    continue;
+                }
+                writer.WriteLine(buffer);
+            }
+            writer.Close();
+            reader.Close();
+            File.Delete(fileName);
+            File.Move(tempFile, fileName);
+            return true;
+        }
+
+        public ISquareMatrix<double> Get()
         {
             DoubleSquareMatrix result;
             if (File.Exists(fileName))
@@ -62,10 +92,10 @@ namespace CalculationMethods.Infrastructure.Services.Builders
                         {
                             result[rowIndex, colIndex] = digit;
                             colIndex++;
-                        }    
+                        }
                         else
                             break;
-                        
+
                     }
                     rowIndex++;
                 }
@@ -77,9 +107,33 @@ namespace CalculationMethods.Infrastructure.Services.Builders
             }
             return result;
         }
+
+        public void Save(ISquareMatrix<double> matrix)
+        {
+            StringBuilder builder = new StringBuilder();
+            string delimeter = options.Delimiters[0] ?? " ";
+            builder.Append($"{options.OpenTag}\r\n");
+            for (int i = 0; i < matrix.Size; i++)
+            {
+                for (int j = 0; j < matrix.Size; j++)
+                {
+                    builder.Append($"{matrix[i, j]}{delimeter}");
+                }
+                builder.Append("\r\n");
+            }
+            builder.Append($"{options.CloseTag}\r\n");
+            File.AppendAllText(fileName, builder.ToString());
+        }
+
+        public bool Update(ISquareMatrix<double> matrix)
+        {
+            Delete(matrix);
+            Save(matrix);
+            return true;
+        }
     }
 
-    public class MatrixFromFileBuilderOptions
+    public class MatrixFromFileOptions
     {
         public string OpenTag { get; set; }
         public string CloseTag { get; set; }

@@ -16,6 +16,10 @@ namespace CalculationMethods.Infrastructure.Entities.Double
         private int _size;
         public int Size => _size;
 
+        public int RowsCount => Size;
+
+        public int ColsCount => Size;
+
         protected bool _matrixChanged = false;
 
         public double this[int row, int column] 

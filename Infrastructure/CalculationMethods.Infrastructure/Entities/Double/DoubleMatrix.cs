@@ -11,6 +11,10 @@ namespace CalculationMethods.Infrastructure.Entities.Double
     {
         public double this[int row, int column] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public int RowsCount { get; }
+
+        public int ColsCount { get; }
+
         public double ConditionNumber()
         {
             throw new NotImplementedException();

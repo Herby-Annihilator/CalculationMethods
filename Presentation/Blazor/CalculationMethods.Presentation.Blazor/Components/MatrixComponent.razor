@@ -1,0 +1,63 @@
+﻿@page "/matrix"
+
+@using CalculationMethods.Core.Entities
+@using CalculationMethods.Infrastructure.Entities.Double
+@using CalculationMethods.Presentation.Blazor.Models
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="1" Class="align-self-center">
+        <MudText Align="Align.Center" Typo="Typo.h4">@Name = </MudText>
+    </MudItem>
+    <MudItem xs="11">
+        @if (matrix == null)
+        {
+            <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+        }
+        else
+        {
+            <MudSimpleTable Striped="false" Bordered="true">
+                <tbody>
+                    @foreach (List<Value> row in _matrix)
+                    {
+                        <tr>
+                            @foreach (Value item in row)
+                            {
+                                <td>
+                                    <MudNumericField @bind-Value="item.Element" Variant="Variant.Text" Step="0.25"/>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        }
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    private IMatrix<double> matrix { get; set; }
+    private List<List<Value>> _matrix;
+    [Parameter]
+    public string Name { get; set; } = "A";
+    [Parameter]
+    public int RowsCount { get; set; } = 5;
+    [Parameter]
+    public int ColsCount { get; set; } = 5;
+
+    protected override void OnInitialized()
+    {
+        matrix = new DoubleSquareMatrix(RowsCount);
+        _matrix = new List<List<Value>>();
+        for (int i = 0; i < RowsCount; i++)
+        {
+            _matrix.Add(new List<Value>());
+            for (int j = 0; j < ColsCount; j++)
+            {
+                _matrix[i].Add(new Value { Element = i });
+            }
+        }
+        base.OnInitialized();
+    }
+}
+
