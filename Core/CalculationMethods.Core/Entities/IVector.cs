@@ -12,7 +12,6 @@ namespace CalculationMethods.Core.Entities
     }
 
     public interface IVector<T> : IVector
-        where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, ISpanFormattable
     {
         T this[int index] { get; set; }
     }

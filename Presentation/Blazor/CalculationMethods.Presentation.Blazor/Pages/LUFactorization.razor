@@ -1,5 +1,15 @@
 ﻿@page "/lu_factorization"
 
+
+@using CalculationMethods.Core.Entities
+@using CalculationMethods.Core.Services.Repositories
+@using CalculationMethods.Presentation.Blazor.Components
+
+
+@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository
+@inject IVectorRepository<double> vectorRepository
+
+
 <MudText Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
     LU-разложение (LU-декомпозиция, LU-факторизация) — представление матрицы A в виде произведения двух матриц, A=LU, где L — нижняя треугольная матрица, а U — верхняя треугольная матрица.
@@ -14,11 +24,45 @@
 
 <MudTextField Label="Размерность" @bind-Value="_matrixSize"/>
 
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="6">
+        <MatrixComponent Matrix="_matrix" Editable="false"></MatrixComponent>
+    </MudItem>
+    <MudItem xs="1" Class="align-self-center">
+        <MudText Typo="Typo.h4" Align="Align.Center"> * </MudText>
+    </MudItem>
+    <MudItem xs="2" Class="justify-content-center align-content-center">
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vector" VectorXS="4" Editable="false"></VectorComponent>
+    </MudItem>
+    <MudItem xs="1" Class="align-self-center">
+        <MudText Typo="Typo.h4" Align="Align.Center"> = </MudText>
+    </MudItem>
+    <MudItem Class="justify-content-center align-content-center" xs="2">
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vectorB" VectorXS="4" Editable="false"></VectorComponent>
+    </MudItem>
+</MudGrid>
+
 
 
 @code {
     private int _matrixSize = 0;
+
+    ISquareMatrix<double> _matrix;
+    IVector<double> _vectorB;
+    IVector<double> _vector;
+
     public Variant InputVarian { get; set; } = Variant.ManualInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _matrix = matrixRepository.Get();
+        _vectorB = vectorRepository.Get();
+        _vector = vectorRepository.Get();
+    }
+
+
+
+
     public enum Variant
     {
         FromFile, ManualInput

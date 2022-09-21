@@ -9,7 +9,6 @@ namespace CalculationMethods.Core.Services.Repositories
 {
     public interface IMatrixRepository<TMatrix, TElement> 
         where TMatrix : IMatrix<TElement>
-        where TElement : IComparable, IComparable<TElement>, IConvertible, IEquatable<TElement>, ISpanFormattable
     {
         void Save(TMatrix matrix);
         TMatrix Get();

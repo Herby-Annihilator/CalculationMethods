@@ -1,13 +1,14 @@
-﻿@page "/matrix"
-
-@using CalculationMethods.Core.Entities
-@using CalculationMethods.Infrastructure.Entities.Double
+﻿@typeparam T
 
 <MudGrid Justify="Justify.Center">
-    <MudItem xs="1" Class="align-self-center">
-        <MudText Align="Align.Center" Typo="Typo.h4">@Name = </MudText>
-    </MudItem>
-    <MudItem xs="11">
+    @if (!string.IsNullOrWhiteSpace(Name))
+    {
+        <MudItem xs="_nameXS" Class="align-self-center">
+            <MudText Align="Align.Center" Typo="Typo.h4">@Name = </MudText>
+        </MudItem>
+    }
+    
+    <MudItem xs="_matrixXS">
         @if (Matrix == null)
         {
             <MudProgressCircular Indeterminate="true"></MudProgressCircular>
@@ -24,7 +25,16 @@
                             {
                                 int col = j;
                                 <td>
-                                    <MudNumericField @bind-Value="Matrix[row, col]" Variant="Variant.Text" Step="0.25"/>
+                                    @if (Editable)
+                                    {
+                                        <MudNumericField T="T" @bind-Value="Matrix[row, col]" Variant="Variant.Text"/>
+                                    }
+                                    else
+                                    {
+                                        <MudText>
+                                            @Matrix[row, col]
+                                        </MudText>
+                                    }
                                 </td>
                             }
                         </tr>
@@ -34,18 +44,3 @@
         }
     </MudItem>
 </MudGrid>
-
-
-@code {
-    [Parameter]
-    public IMatrix<double> Matrix { get; set; }
-    [Parameter]
-    public string Name { get; set; } = "A";
-
-    protected override void OnInitialized()
-    {
-        Matrix = new DoubleSquareMatrix(5);
-        base.OnInitialized();
-    }
-}
-

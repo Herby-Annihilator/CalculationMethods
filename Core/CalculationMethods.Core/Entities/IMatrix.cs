@@ -11,7 +11,6 @@ namespace CalculationMethods.Core.Entities
     }
 
     public interface IMatrix<T> : IMatrix
-        where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, ISpanFormattable
     {
         int RowsCount { get; }
         int ColsCount { get; }

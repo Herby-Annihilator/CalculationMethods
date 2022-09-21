@@ -1,0 +1,64 @@
+﻿@typeparam T
+
+
+<MudGrid>
+    @if (!string.IsNullOrWhiteSpace(Name))
+    {
+        <MudItem xs="NameXS">
+            <MudText Typo="Typo.h4" Align="Align.Center">@Name = </MudText>
+        </MudItem>
+    }
+    @if (Vector == null)
+    {
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+    }   
+    else
+    {
+        <MudItem xs="VectorXS">
+            <MudSimpleTable Bordered="true">
+                <tbody>
+                    @if (Mode == DisplayMode.Horizontal)
+                    {
+                        <tr>
+                            @for (int i = 0; i < Vector.Size; i++)
+                            {
+                                int index = i;
+                                <td>
+                                    @if (Editable)
+                                    {
+                                        <MudTextField T="T" @bind-Value="Vector[index]" Variant="Variant.Text"></MudTextField>
+                                    }
+                                    else
+                                    {
+                                        @Vector[index]
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                    else
+                    {
+                        @for (int i = 0; i < Vector.Size; i++)
+                        {
+                            int index = i;
+                            <tr>
+                                <td>
+                                    @if (Editable)
+                                    {
+                                        <MudTextField T="T" @bind-Value="Vector[index]" Variant="Variant.Text"></MudTextField>
+                                    }
+                                    else
+                                    {
+                                        <MudText>
+                                            @Vector[index]
+                                        </MudText>  
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+    }
+</MudGrid> 

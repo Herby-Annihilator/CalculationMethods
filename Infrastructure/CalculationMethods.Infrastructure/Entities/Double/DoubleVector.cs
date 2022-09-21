@@ -17,6 +17,7 @@ namespace CalculationMethods.Infrastructure.Entities.Double
         public DoubleVector(int size)
         {
             Size = size;
+            _vector = DenseVector.Create(size, 0);
         }
     }
 }

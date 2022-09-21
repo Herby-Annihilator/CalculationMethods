@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace CalculationMethods.Core.Services.Repositories
 {
     public interface IVectorRepository<TElement>
-        where TElement : IComparable, IComparable<TElement>, IConvertible, IEquatable<TElement>, ISpanFormattable
     {
         void Save(IVector<TElement> vector);
         bool Update(IVector<TElement> vector);
