@@ -4,11 +4,11 @@
 @using CalculationMethods.Core.Entities
 @using CalculationMethods.Core.Services.Repositories
 @using CalculationMethods.Presentation.Blazor.Components
+@using System.Windows.Input
+@using CalculationMethods.Presentation.Blazor.Infrastructure.Commands.Base
 
-
-@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository
-@inject IVectorRepository<double> vectorRepository
-
+@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository;
+@inject IVectorRepository<double> vectorRepository;
 
 <MudText Typo="Typo.h2" Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
@@ -61,7 +61,7 @@
 
 <MudGrid Justify="Justify.SpaceBetween">
     <MudItem>
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Secondary" @onclick="@(() => _isSolutionVisible = false)">Очистить</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Secondary" Command="ClearMatrixCommand">Очистить</MudButton>
     </MudItem>
     <MudItem>
         <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" @onclick="@(() => _isSolutionVisible = true)">Решить</MudButton>
@@ -110,43 +110,4 @@
             </MudText>
         </MudItem>
     </MudGrid>
-}
-
-
-
-
-
-@code {
-    private bool _isSolutionVisible = false;
-    private string _path;
-    private int _matrixSize = 0;
-    private double _norm;
-    private double _conditionNumber;
-    private double _determinant;
-    ISquareMatrix<double> _uMatrix;
-    ISquareMatrix<double> _lMatrix;
-    ISquareMatrix<double> _matrix;
-    ISquareMatrix<double> _reversedMatrix;
-    IVector<double> _vectorB;
-    IVector<double> _vector;
-
-    public Variant InputVarian { get; set; } = Variant.ManualInput;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _matrix = matrixRepository.Get();
-        _uMatrix = matrixRepository.Get();
-        _lMatrix = matrixRepository.Get();
-        _reversedMatrix = matrixRepository.Get();
-        _vectorB = vectorRepository.Get();
-        _vector = vectorRepository.Get();
-    }
-
-
-
-
-    public enum Variant
-    {
-        FromFile, ManualInput
-    }
 }
