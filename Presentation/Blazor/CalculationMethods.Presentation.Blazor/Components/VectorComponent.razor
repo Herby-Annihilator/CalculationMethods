@@ -4,8 +4,8 @@
 <MudGrid>
     @if (!string.IsNullOrWhiteSpace(Name))
     {
-        <MudItem xs="NameXS">
-            <MudText Typo="Typo.h4" Align="Align.Center">@Name = </MudText>
+        <MudItem xs="NameXS" Class="align-self-center">
+            <MudText Typo="Typo.h5" Align="Align.Center">@Name = </MudText>
         </MudItem>
     }
     @if (Vector == null)

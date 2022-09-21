@@ -10,21 +10,38 @@
 @inject IVectorRepository<double> vectorRepository
 
 
-<MudText Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
+<MudText Typo="Typo.h2" Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
     LU-разложение (LU-декомпозиция, LU-факторизация) — представление матрицы A в виде произведения двух матриц, A=LU, где L — нижняя треугольная матрица, а U — верхняя треугольная матрица.
     LU-разложение используется для решения систем линейных уравнений, обращения матриц и вычисления определителя. LU-разложение существует только в том случае, когда матрица A обратима, а все ведущие (угловые) главные миноры матрицы A невырождены.
     Этот метод является одной из разновидностей метода Гаусса.
 </MudExpansionPanel>
 
-<MudRadioGroup @bind-SelectedOption="@InputVarian">
-    <MudRadio Option="@Variant.ManualInput" Color="Color.Primary">Ручной ввод</MudRadio>
-    <MudRadio Option="@Variant.FromFile" Color="Color.Primary">Из файла</MudRadio>
-</MudRadioGroup>
+<MudGrid Justify="Justify.SpaceBetween" Class="mt-5">
+    <MudItem xs="8" Class="align-self-center">
+        <MudGrid>
+            <MudItem Class="align-self-center" xs="8">
+                <MudTextField Label="Путь к файлу" Variant="MudBlazor.Variant.Outlined" @bind-Value="_path"></MudTextField>
+            </MudItem>
+            <MudItem Class="align-self-center" xs="4">
+                <MudIconButton Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem Class="align-self-center" xs="4">
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Восстановить</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+    </MudItem>
+</MudGrid>
 
-<MudTextField Label="Размерность" @bind-Value="_matrixSize"/>
+<MudGrid Class="mt-3">
+    <MudItem xs="3">
+        <MudTextField Variant="MudBlazor.Variant.Outlined"  Label="Размерность" @bind-Value="_matrixSize"/>
+    </MudItem>
+</MudGrid>
 
-<MudGrid Justify="Justify.Center">
+
+<MudGrid Justify="Justify.Center" Class="mt-5 mb-3">
     <MudItem xs="6">
         <MatrixComponent Matrix="_matrix" Editable="false"></MatrixComponent>
     </MudItem>
@@ -42,12 +59,74 @@
     </MudItem>
 </MudGrid>
 
+<MudGrid Justify="Justify.SpaceBetween">
+    <MudItem>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Secondary" @onclick="@(() => _isSolutionVisible = false)">Очистить</MudButton>
+    </MudItem>
+    <MudItem>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" @onclick="@(() => _isSolutionVisible = true)">Решить</MudButton>
+    </MudItem>
+</MudGrid>
+
+
+@if (_isSolutionVisible)
+{
+    <MudText GutterBottom="true" Typo="Typo.h4" Class="mt-5">Решение</MudText>
+    <MudGrid>
+        <MudItem xs="5">
+            <MatrixComponent Matrix="_uMatrix" Name="U" NameXS="2" MatrixXS="10" Editable="false"/>
+        </MudItem>
+        <MudItem xs="2"/>
+        <MudItem xs="5">
+            <MatrixComponent Matrix="_lMatrix" Name="L" Editable="false" NameXS="2" MatrixXS="10"/>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="8">
+            <MatrixComponent Matrix="_reversedMatrix" Name="Обратная матрица" Editable="false" NameXS="6" MatrixXS="6"/>
+        </MudItem>
+        <MudItem xs="1">
+        </MudItem>
+        <MudItem xs="3">
+            <VectorComponent Vector="_vector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false"/>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Class="mt-3 mb-5">
+        <MudItem xs="4">
+            <MudText GutterBottom="true">
+                Норма исходной матрицы = @_norm
+            </MudText>
+        </MudItem>
+        <MudItem xs="4">
+            <MudText GutterBottom="true">
+                Число обусловленности исходной матрицы = @_conditionNumber
+            </MudText>
+        </MudItem>
+        <MudItem xs="4">
+            <MudText GutterBottom="true">
+                Определитель исходной матрицы = @_determinant
+            </MudText>
+        </MudItem>
+    </MudGrid>
+}
+
+
+
 
 
 @code {
+    private bool _isSolutionVisible = false;
+    private string _path;
     private int _matrixSize = 0;
-
+    private double _norm;
+    private double _conditionNumber;
+    private double _determinant;
+    ISquareMatrix<double> _uMatrix;
+    ISquareMatrix<double> _lMatrix;
     ISquareMatrix<double> _matrix;
+    ISquareMatrix<double> _reversedMatrix;
     IVector<double> _vectorB;
     IVector<double> _vector;
 
@@ -56,6 +135,9 @@
     protected override async Task OnInitializedAsync()
     {
         _matrix = matrixRepository.Get();
+        _uMatrix = matrixRepository.Get();
+        _lMatrix = matrixRepository.Get();
+        _reversedMatrix = matrixRepository.Get();
         _vectorB = vectorRepository.Get();
         _vector = vectorRepository.Get();
     }

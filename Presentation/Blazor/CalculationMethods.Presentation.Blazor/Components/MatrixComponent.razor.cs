@@ -12,22 +12,18 @@ namespace CalculationMethods.Presentation.Blazor.Components
         [Parameter]
         public bool Editable { get; set; } = false;
 
+        [Parameter]
+        public int NameXS { get => _nameXS; set => _nameXS = value; }
+        [Parameter]
+        public int MatrixXS { get => _matrixXS; set => _matrixXS = value; }
+
         private int _nameXS;
         private int _matrixXS;
 
-        protected override void OnInitialized()
+        public MatrixComponent()
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                _nameXS = 0;
-                _matrixXS = 12;
-            }
-            else
-            {
-                _nameXS = 1;
-                _matrixXS = 11;
-            }
-            base.OnInitialized();
+            _nameXS = 1;
+            _matrixXS = 11;
         }
     }
 }
