@@ -16,9 +16,9 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         ISquareMatrix<double> _uMatrix;
         ISquareMatrix<double> _lMatrix;
         ISquareMatrix<double> _matrix;
-        ISquareMatrix<double> _reversedMatrix;
+        IMatrix<double> _reversedMatrix;
         IVector<double> _vectorB;
-        IVector<double> _vector;
+        IVector<double> _solutionVector;
 
         public LUFactorization()
         {
@@ -50,15 +50,23 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         public ICommand SolveCommand { get; }
         private void OnSolveCommandExecuted(object p)
         {
-            for (int i = 0; i < _matrix.RowsCount; i++)
+            try
             {
-                for (int j = 0; j < _matrix.ColsCount; j++)
-                {
-                    _matrix[i, j] = 0;
-                }
+                _solutionVector = _matrix.Solve(_vectorB);
+                _uMatrix = _matrix.GetUMatrix();
+                _lMatrix = _matrix.GetLMatrix();
+                _determinant = _matrix.Determinant();
+                _norm = _matrix.Norm();
+                _reversedMatrix = _matrix.Inverse();
+
+                _isSolutionVisible = true;
+                StateHasChanged();
+                snackbar.Add("Решение получено", MudBlazor.Severity.Success);
             }
-            _isSolutionVisible = false;
-            StateHasChanged();
+            catch (Exception ex)
+            {
+                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+            }
         }
         private bool CanSolveCommandExecute(object p) => true;
         #endregion
@@ -67,15 +75,14 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         public ICommand FindFileCommand { get; }
         private void OnFindFileCommandExecuted(object p)
         {
-            for (int i = 0; i < _matrix.RowsCount; i++)
+            try
             {
-                for (int j = 0; j < _matrix.ColsCount; j++)
-                {
-                    _matrix[i, j] = 0;
-                }
+                StateHasChanged();
             }
-            _isSolutionVisible = false;
-            StateHasChanged();
+            catch (Exception e)
+            {
+                snackbar.Add(e.Message, MudBlazor.Severity.Error);
+            }
         }
         private bool CanFindFileCommandExecute(object p) => true;
         #endregion
@@ -84,15 +91,18 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         public ICommand RestoreSystemCommand { get; }
         private void OnRestoreSystemCommandExecuted(object p)
         {
-            for (int i = 0; i < _matrix.RowsCount; i++)
+            try
             {
-                for (int j = 0; j < _matrix.ColsCount; j++)
-                {
-                    _matrix[i, j] = 0;
-                }
+                _matrix = matrixRepository.Get();
+                _solutionVector = vectorRepository.Get();
+                _vectorB = vectorRepository.Get();
+                StateHasChanged();
+                snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
             }
-            _isSolutionVisible = false;
-            StateHasChanged();
+            catch (Exception ex)
+            {
+                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+            }
         }
         private bool CanRestoreSystemCommandExecute(object p) => true;
         #endregion
@@ -101,15 +111,18 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         public ICommand SaveSystemCommand { get; }
         private void OnSaveSystemCommandExecuted(object p)
         {
-            for (int i = 0; i < _matrix.RowsCount; i++)
+            try
             {
-                for (int j = 0; j < _matrix.ColsCount; j++)
-                {
-                    _matrix[i, j] = 0;
-                }
+                matrixRepository.Save(_matrix);
+                vectorRepository.Save(_solutionVector);
+                vectorRepository.Save(_vectorB);
+                StateHasChanged();
+                snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
             }
-            _isSolutionVisible = false;
-            StateHasChanged();
+            catch (Exception ex)
+            {
+                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+            }
         }
         private bool CanSaveSystemCommandExecute(object p) => true;
         #endregion
@@ -121,7 +134,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
             _lMatrix = matrixRepository.Get();
             _reversedMatrix = matrixRepository.Get();
             _vectorB = vectorRepository.Get();
-            _vector = vectorRepository.Get();
+            _solutionVector = vectorRepository.Get();
         }
     }
 }

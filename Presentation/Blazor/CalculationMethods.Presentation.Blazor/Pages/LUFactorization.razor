@@ -7,8 +7,11 @@
 @using System.Windows.Input
 @using CalculationMethods.Presentation.Blazor.Infrastructure.Commands.Base
 
-@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository;
-@inject IVectorRepository<double> vectorRepository;
+@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository
+@inject IVectorRepository<double> vectorRepository
+@inject ISnackbar snackbar
+
+<InputFile id="fileInput" hidden multiple />
 
 <MudText Typo="Typo.h2" Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
@@ -24,7 +27,7 @@
                 <MudTextField Label="Путь к файлу" Variant="MudBlazor.Variant.Outlined" @bind-Value="_path"></MudTextField>
             </MudItem>
             <MudItem Class="align-self-center" xs="4">
-                <MudIconButton Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
+                <MudIconButton for="fileInput" Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
             </MudItem>
         </MudGrid>
     </MudItem>
@@ -49,7 +52,7 @@
         <MudText Typo="Typo.h4" Align="Align.Center"> * </MudText>
     </MudItem>
     <MudItem xs="2" Class="justify-content-center align-content-center">
-        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vector" VectorXS="4" Editable="false"></VectorComponent>
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_solutionVector" VectorXS="4" Editable="false"></VectorComponent>
     </MudItem>
     <MudItem xs="1" Class="align-self-center">
         <MudText Typo="Typo.h4" Align="Align.Center"> = </MudText>
@@ -89,7 +92,7 @@
         <MudItem xs="1">
         </MudItem>
         <MudItem xs="3">
-            <VectorComponent Vector="_vector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false"/>
+            <VectorComponent Vector="_solutionVector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false"/>
         </MudItem>
     </MudGrid>
 

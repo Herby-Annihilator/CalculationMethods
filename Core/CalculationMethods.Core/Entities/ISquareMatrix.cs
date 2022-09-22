@@ -15,5 +15,6 @@ namespace CalculationMethods.Core.Entities
     {
         ISquareMatrix<T> GetLMatrix();
         ISquareMatrix<T> GetUMatrix();
+        IVector<T> Solve(IVector<T> b);
     }
 }
