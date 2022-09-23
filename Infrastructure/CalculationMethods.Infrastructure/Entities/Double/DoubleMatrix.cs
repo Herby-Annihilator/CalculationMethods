@@ -9,6 +9,12 @@ namespace CalculationMethods.Infrastructure.Entities.Double
 {
     public class DoubleMatrix : IMatrix<double>
     {
+        public DoubleMatrix(int rowsCount, int colsCount)
+        {
+            RowsCount = rowsCount;
+            ColsCount = colsCount;
+        }
+
         public double this[int row, int column] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public int RowsCount { get; }

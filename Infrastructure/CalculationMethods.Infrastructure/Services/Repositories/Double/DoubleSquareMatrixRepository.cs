@@ -13,124 +13,43 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
     {
         protected string fileName;
         protected MatrixFromFileOptions options;
+        private DoubleSquareMatrixRepository _repository;
 
         public DoubleSquareMatrixRepository(string fileName, MatrixFromFileOptions options)
         {
             this.fileName = fileName;
             this.options = options;
+            _repository = new DoubleSquareMatrixRepository(fileName, options);
         }
 
         public bool Delete(ISquareMatrix<double> matrix)
         {
-            Guid guid = Guid.NewGuid();
-            string tempFile = $"{fileName}_{guid}";
-            StreamReader reader = new StreamReader(fileName);
-            StreamWriter writer = new StreamWriter(tempFile);
-            string buffer;
-            while ((buffer = reader.ReadLine()) != null)
-            {
-                if (buffer == options.OpenTag)
-                {
-                    do
-                    {
-                        buffer = reader.ReadLine();
-                    } while (buffer != null && buffer != options.CloseTag);
-                    if (buffer == null)
-                        break;
-                    continue;
-                }
-                writer.WriteLine(buffer);
-            }
-            writer.Close();
-            reader.Close();
-            File.Delete(fileName);
-            File.Move(tempFile, fileName);
-            return true;
+            return _repository.Delete(matrix);
         }
 
         public ISquareMatrix<double> Get()
         {
-            DoubleSquareMatrix result;
-            if (File.Exists(fileName))
+            ISquareMatrix<double> result;
+            IMatrix<double> matrix = _repository.Get();
+            if (matrix.ColsCount == matrix.RowsCount)
             {
-                List<List<double>> listOfRows = new List<List<double>>();
-                List<double> row;
-                StreamReader reader = new StreamReader(fileName);
-                string str;
-                string[] digits;
-                int minColsCount = int.MaxValue;
-                while ((str = reader.ReadLine()) != null)
+                result = new DoubleSquareMatrix(matrix.ColsCount);
+                for (int i = 0; i < matrix.RowsCount; i++)
                 {
-                    if (str == options.OpenTag)
+                    for (int j = 0; j < matrix.ColsCount; j++)
                     {
-                        str = reader.ReadLine();
-                        while (str != options.CloseTag && str != null)
-                        {
-                            digits = str.Split(options.Delimiters, StringSplitOptions.RemoveEmptyEntries);
-                            row = new List<double>();
-                            if (digits.Length < minColsCount)
-                                minColsCount = digits.Length;
-                            for (int i = 0; i < digits.Length; i++)
-                            {
-                                row.Add(Convert.ToDouble(digits[i].Replace(",", ".")));
-                            }
-                            listOfRows.Add(row);
-                            str = reader.ReadLine();
-                        }
-                        break;
+                        result[i, j] = matrix[i, j];
                     }
                 }
-                result = new DoubleSquareMatrix(listOfRows.Count);
-                int rowIndex = 0;
-                int colIndex;
-                foreach (var item in listOfRows)
-                {
-                    colIndex = 0;
-                    foreach (var digit in item)
-                    {
-                        if (colIndex < minColsCount)
-                        {
-                            result[rowIndex, colIndex] = digit;
-                            colIndex++;
-                        }
-                        else
-                            break;
-
-                    }
-                    rowIndex++;
-                }
-                reader.Close();
+                return result;
             }
             else
-            {
-                throw new FileNotFoundException(fileName);
-            }
-            return result;
+                throw new InvalidOperationException("Matrix in file is not square matrix!");
         }
 
-        public void Save(ISquareMatrix<double> matrix)
-        {
-            StringBuilder builder = new StringBuilder();
-            string delimeter = options.Delimiters[0] ?? " ";
-            builder.Append($"{options.OpenTag}\r\n");
-            for (int i = 0; i < matrix.Size; i++)
-            {
-                for (int j = 0; j < matrix.Size; j++)
-                {
-                    builder.Append($"{matrix[i, j]}{delimeter}");
-                }
-                builder.Append("\r\n");
-            }
-            builder.Append($"{options.CloseTag}\r\n");
-            File.AppendAllText(fileName, builder.ToString());
-        }
+        public void Save(ISquareMatrix<double> matrix) => _repository.Save(matrix);
 
-        public bool Update(ISquareMatrix<double> matrix)
-        {
-            Delete(matrix);
-            Save(matrix);
-            return true;
-        }
+        public bool Update(ISquareMatrix<double> matrix) => _repository.Update(matrix);
     }
 
     public class MatrixFromFileOptions

@@ -1,5 +1,7 @@
 using CalculationMethods.Core.Entities;
+using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
+using CalculationMethods.Infrastructure.Services.Factories.Base;
 using CalculationMethods.Infrastructure.Services.Repositories.Double;
 using CalculationMethods.Presentation.Blazor;
 using Microsoft.AspNetCore.Components.Web;
@@ -25,7 +27,6 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-builder.Services.AddScoped<IMatrixRepository<ISquareMatrix<double>, double>, FakeDoubleSquareMatrixRepository>();
-builder.Services.AddScoped<IVectorRepository<double>, FakeDoubleVectorRepository>();
+builder.Services.AddScoped<IFactory<double>, DefaultFactory>();
 
 await builder.Build().RunAsync();

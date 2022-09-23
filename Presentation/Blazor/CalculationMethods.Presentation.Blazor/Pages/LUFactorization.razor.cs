@@ -1,6 +1,8 @@
 ﻿using CalculationMethods.Core.Entities;
+using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Presentation.Blazor.Infrastructure.Commands;
+using Microsoft.AspNetCore.Components;
 using System.Windows.Input;
 
 namespace CalculationMethods.Presentation.Blazor.Pages
@@ -19,6 +21,17 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         IMatrix<double> _reversedMatrix;
         IVector<double> _vectorB;
         IVector<double> _solutionVector;
+
+        protected IMatrixRepository<ISquareMatrix<double>, double> _matrixRepository;
+        protected IMatrixRepository<ISquareMatrix<double>, double> MatrixRepository => 
+            _matrixRepository ??= RepositoryFactory.MockRepositoryFactory().CreateSquareMatrixRepository();
+
+        protected IVectorRepository<double> _vectorRepository;
+        protected IVectorRepository<double> VectorRepository =>
+            _vectorRepository ??= RepositoryFactory.MockRepositoryFactory().CreateVectorRepository();
+
+        [Inject]
+        protected IFactory<double> RepositoryFactory { get; set; }
 
         public LUFactorization()
         {
@@ -93,9 +106,9 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                _matrix = matrixRepository.Get();
-                _solutionVector = vectorRepository.Get();
-                _vectorB = vectorRepository.Get();
+                _matrix = MatrixRepository.Get();
+                _solutionVector = VectorRepository.Get();
+                _vectorB = VectorRepository.Get();
                 StateHasChanged();
                 snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
             }
@@ -113,9 +126,9 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                matrixRepository.Save(_matrix);
-                vectorRepository.Save(_solutionVector);
-                vectorRepository.Save(_vectorB);
+                MatrixRepository.Save(_matrix);
+                VectorRepository.Save(_solutionVector);
+                VectorRepository.Save(_vectorB);
                 StateHasChanged();
                 snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
             }
@@ -129,12 +142,12 @@ namespace CalculationMethods.Presentation.Blazor.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _matrix = matrixRepository.Get();
-            _uMatrix = matrixRepository.Get();
-            _lMatrix = matrixRepository.Get();
-            _reversedMatrix = matrixRepository.Get();
-            _vectorB = vectorRepository.Get();
-            _solutionVector = vectorRepository.Get();
+            _matrix = MatrixRepository.Get();
+            _uMatrix = MatrixRepository.Get();
+            _lMatrix = MatrixRepository.Get();
+            _reversedMatrix = MatrixRepository.Get();
+            _vectorB = VectorRepository.Get();
+            _solutionVector = VectorRepository.Get();
         }
     }
 }

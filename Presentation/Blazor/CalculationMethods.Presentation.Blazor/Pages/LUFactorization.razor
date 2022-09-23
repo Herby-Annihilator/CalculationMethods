@@ -2,13 +2,12 @@
 
 
 @using CalculationMethods.Core.Entities
+@using CalculationMethods.Core.Services.Factories.Base
 @using CalculationMethods.Core.Services.Repositories
 @using CalculationMethods.Presentation.Blazor.Components
 @using System.Windows.Input
 @using CalculationMethods.Presentation.Blazor.Infrastructure.Commands.Base
 
-@inject IMatrixRepository<ISquareMatrix<double>, double> matrixRepository
-@inject IVectorRepository<double> vectorRepository
 @inject ISnackbar snackbar
 
 <InputFile id="fileInput" hidden multiple />
