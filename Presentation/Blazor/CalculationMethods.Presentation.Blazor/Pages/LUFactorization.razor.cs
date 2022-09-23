@@ -3,6 +3,7 @@ using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Presentation.Blazor.Infrastructure.Commands;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Windows.Input;
 
 namespace CalculationMethods.Presentation.Blazor.Pages
@@ -15,12 +16,12 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private double _norm;
         private double _conditionNumber;
         private double _determinant;
-        ISquareMatrix<double> _uMatrix;
-        ISquareMatrix<double> _lMatrix;
-        ISquareMatrix<double> _matrix;
-        IMatrix<double> _reversedMatrix;
-        IVector<double> _vectorB;
-        IVector<double> _solutionVector;
+        private ISquareMatrix<double> _uMatrix;
+        private ISquareMatrix<double> _lMatrix;
+        private ISquareMatrix<double> _matrix;
+        private IMatrix<double> _reversedMatrix;
+        private IVector<double> _vectorB;
+        private IVector<double> _solutionVector;
 
         protected IMatrixRepository<ISquareMatrix<double>, double> _matrixRepository;
         protected IMatrixRepository<ISquareMatrix<double>, double> MatrixRepository => 
@@ -88,16 +89,22 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         public ICommand FindFileCommand { get; }
         private void OnFindFileCommandExecuted(object p)
         {
-            try
-            {
-                StateHasChanged();
-            }
-            catch (Exception e)
-            {
-                snackbar.Add(e.Message, MudBlazor.Severity.Error);
-            }
+            
         }
         private bool CanFindFileCommandExecute(object p) => true;
+
+        private void UploadFile(InputFileChangeEventArgs e)
+        {
+            try
+            {
+                var file = e.File;
+                _path = file.Name;
+            }
+            catch (Exception ex)
+            {
+                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+            }
+        }
         #endregion
 
         #region RestoreSystemCommand

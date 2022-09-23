@@ -10,7 +10,7 @@
 
 @inject ISnackbar snackbar
 
-<InputFile id="fileInput" hidden multiple />
+<InputFile id="fileInput" hidden accept=".txt" OnChange="UploadFile"/>
 
 <MudText Typo="Typo.h2" Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
@@ -26,7 +26,7 @@
                 <MudTextField Label="Путь к файлу" Variant="MudBlazor.Variant.Outlined" @bind-Value="_path"></MudTextField>
             </MudItem>
             <MudItem Class="align-self-center" xs="4">
-                <MudIconButton for="fileInput" Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
+                <MudIconButton HtmlTag="label" for="fileInput" Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
             </MudItem>
         </MudGrid>
     </MudItem>
