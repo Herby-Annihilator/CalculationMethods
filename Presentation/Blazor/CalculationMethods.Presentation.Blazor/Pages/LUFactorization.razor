@@ -10,8 +10,6 @@
 
 @inject ISnackbar snackbar
 
-<InputFile id="fileInput" hidden accept=".txt" OnChange="UploadFile"/>
-
 <MudText Typo="Typo.h2" Align="Align.Center">Лабораторная работа №1. LU-разложение</MudText>
 <MudExpansionPanel Text="Описание">
     LU-разложение (LU-декомпозиция, LU-факторизация) — представление матрицы A в виде произведения двух матриц, A=LU, где L — нижняя треугольная матрица, а U — верхняя треугольная матрица.
@@ -19,21 +17,9 @@
     Этот метод является одной из разновидностей метода Гаусса.
 </MudExpansionPanel>
 
-<MudGrid Justify="Justify.SpaceBetween" Class="mt-5">
-    <MudItem xs="8" Class="align-self-center">
-        <MudGrid>
-            <MudItem Class="align-self-center" xs="8">
-                <MudTextField Label="Путь к файлу" Variant="MudBlazor.Variant.Outlined" @bind-Value="_path"></MudTextField>
-            </MudItem>
-            <MudItem Class="align-self-center" xs="4">
-                <MudIconButton HtmlTag="label" for="fileInput" Size="Size.Large" Color="Color.Primary" Icon="@Icons.Filled.FolderOpen"/>
-            </MudItem>
-        </MudGrid>
-    </MudItem>
-    <MudItem Class="align-self-center" xs="4">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Восстановить</MudButton>
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
-    </MudItem>
+<MudGrid Class="mt-5">
+    <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSystemCommand">Восстановить</MudButton>
+    <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить</MudButton>
 </MudGrid>
 
 <MudGrid Class="mt-3">

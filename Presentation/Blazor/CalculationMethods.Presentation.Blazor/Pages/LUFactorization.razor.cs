@@ -1,4 +1,5 @@
 ﻿using CalculationMethods.Core.Entities;
+using CalculationMethods.Core.Services.Dialogs;
 using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Presentation.Blazor.Infrastructure.Commands;
@@ -23,22 +24,15 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private IVector<double> _vectorB;
         private IVector<double> _solutionVector;
 
-        protected IMatrixRepository<ISquareMatrix<double>, double> _matrixRepository;
-        protected IMatrixRepository<ISquareMatrix<double>, double> MatrixRepository => 
-            _matrixRepository ??= RepositoryFactory.MockRepositoryFactory().CreateSquareMatrixRepository();
-
-        protected IVectorRepository<double> _vectorRepository;
-        protected IVectorRepository<double> VectorRepository =>
-            _vectorRepository ??= RepositoryFactory.MockRepositoryFactory().CreateVectorRepository();
-
         [Inject]
         protected IFactory<double> RepositoryFactory { get; set; }
+        [Inject]
+        protected IConfiguration Configuration { get; set; }
 
         public LUFactorization()
         {
             ClearMatrixCommand = new LambdaCommand(OnClearMatrixCommandExecuted, CanClearMatrixCommandExecute);
             SolveCommand = new LambdaCommand(OnSolveCommandExecuted, CanSolveCommandExecute);
-            FindFileCommand = new LambdaCommand(OnFindFileCommandExecuted, CanFindFileCommandExecute);
             RestoreSystemCommand = new LambdaCommand(OnRestoreSystemCommandExecuted, CanRestoreSystemCommandExecute);
             SaveSystemCommand = new LambdaCommand(OnSaveSystemCommandExecuted, CanSaveSystemCommandExecute);
         }
@@ -74,38 +68,19 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 _reversedMatrix = _matrix.Inverse();
 
                 _isSolutionVisible = true;
-                StateHasChanged();
+                
                 snackbar.Add("Решение получено", MudBlazor.Severity.Success);
+                StateHasChanged();
             }
             catch (Exception ex)
             {
                 snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+                StateHasChanged();
             }
         }
         private bool CanSolveCommandExecute(object p) => true;
         #endregion
 
-        #region FindFileCommand
-        public ICommand FindFileCommand { get; }
-        private void OnFindFileCommandExecuted(object p)
-        {
-            
-        }
-        private bool CanFindFileCommandExecute(object p) => true;
-
-        private void UploadFile(InputFileChangeEventArgs e)
-        {
-            try
-            {
-                var file = e.File;
-                _path = file.Name;
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-            }
-        }
-        #endregion
 
         #region RestoreSystemCommand
         public ICommand RestoreSystemCommand { get; }
@@ -113,15 +88,20 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                _matrix = MatrixRepository.Get();
-                _solutionVector = VectorRepository.Get();
-                _vectorB = VectorRepository.Get();
-                StateHasChanged();
+                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);
+                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
+                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
+                _matrix = RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Get();
+                _solutionVector = RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Get();
+                _vectorB = RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Get();
+                
                 snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
+                StateHasChanged();
             }
             catch (Exception ex)
             {
                 snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+                StateHasChanged();
             }
         }
         private bool CanRestoreSystemCommandExecute(object p) => true;
@@ -133,28 +113,23 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                MatrixRepository.Save(_matrix);
-                VectorRepository.Save(_solutionVector);
-                VectorRepository.Save(_vectorB);
-                StateHasChanged();
+                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);
+                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
+                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
+                RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Save(_matrix);
+                RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Save(_solutionVector);
+                RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Save(_vectorB);
+                
                 snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
+                StateHasChanged();
             }
             catch (Exception ex)
             {
                 snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+                StateHasChanged();
             }
         }
         private bool CanSaveSystemCommandExecute(object p) => true;
         #endregion
-
-        protected override async Task OnInitializedAsync()
-        {
-            _matrix = MatrixRepository.Get();
-            _uMatrix = MatrixRepository.Get();
-            _lMatrix = MatrixRepository.Get();
-            _reversedMatrix = MatrixRepository.Get();
-            _vectorB = VectorRepository.Get();
-            _solutionVector = VectorRepository.Get();
-        }
     }
 }

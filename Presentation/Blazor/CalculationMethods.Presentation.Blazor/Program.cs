@@ -1,6 +1,8 @@
 using CalculationMethods.Core.Entities;
+using CalculationMethods.Core.Services.Dialogs;
 using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
+using CalculationMethods.Infrastructure.Services.Dialogs;
 using CalculationMethods.Infrastructure.Services.Factories.Base;
 using CalculationMethods.Infrastructure.Services.Repositories.Double;
 using CalculationMethods.Presentation.Blazor;
