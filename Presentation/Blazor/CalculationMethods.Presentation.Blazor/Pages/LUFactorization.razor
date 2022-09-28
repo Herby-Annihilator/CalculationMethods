@@ -17,33 +17,52 @@
     Этот метод является одной из разновидностей метода Гаусса.
 </MudExpansionPanel>
 
-<MudGrid Class="mt-5">
-    <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSystemCommand">Восстановить</MudButton>
-    <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить</MudButton>
+<MudGrid Justify="Justify.SpaceBetween" Class="mt-5">
+    <MudItem xs="3" Class="d-flex flex-column">
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить все</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSystemCommand">Восстановить все</MudButton>       
+    </MudItem>
+    <MudItem xs="3" Class="d-flex flex-column">
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить матрицу</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить матрицу</MudButton>
+    </MudItem>
+    <MudItem xs="3" Class="d-flex flex-column">
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить вектор</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить вектор</MudButton>
+    </MudItem>
+    <MudItem xs="3" Class="d-flex flex-column">
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить правую часть</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить правую часть</MudButton>
+    </MudItem>  
 </MudGrid>
 
-<MudGrid Class="mt-3">
+<MudGrid Class="mt-3" style="align-items: center;">
     <MudItem xs="3">
         <MudTextField Variant="MudBlazor.Variant.Outlined"  Label="Размерность" @bind-Value="_matrixSize"/>
     </MudItem>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary">Применить</MudButton>
+    <MudRadioGroup @bind-SelectedOption="SelectedInputVariant">
+        <MudRadio Option="InputVariant.Edit" Color="Color.Primary">Редактировать</MudRadio>
+        <MudRadio Option="InputVariant.ReadOnly" Color="Color.Primary">Только для чтения</MudRadio>
+    </MudRadioGroup>
 </MudGrid>
 
 
 <MudGrid Justify="Justify.Center" Class="mt-5 mb-3">
     <MudItem xs="6">
-        <MatrixComponent Matrix="_matrix" Editable="false"></MatrixComponent>
+        <MatrixComponent Matrix="_matrix" Editable="_editable"></MatrixComponent>
     </MudItem>
     <MudItem xs="1" Class="align-self-center">
         <MudText Typo="Typo.h4" Align="Align.Center"> * </MudText>
     </MudItem>
     <MudItem xs="2" Class="justify-content-center align-content-center">
-        <VectorComponent Mode="DisplayMode.Vertical" Vector="_solutionVector" VectorXS="4" Editable="false"></VectorComponent>
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_solutionVector" VectorXS="4" Editable="_editable"></VectorComponent>
     </MudItem>
     <MudItem xs="1" Class="align-self-center">
         <MudText Typo="Typo.h4" Align="Align.Center"> = </MudText>
     </MudItem>
     <MudItem Class="justify-content-center align-content-center" xs="2">
-        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vectorB" VectorXS="4" Editable="false"></VectorComponent>
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vectorB" VectorXS="4" Editable="_editable"></VectorComponent>
     </MudItem>
 </MudGrid>
 

@@ -23,6 +23,20 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private IMatrix<double> _reversedMatrix;
         private IVector<double> _vectorB;
         private IVector<double> _solutionVector;
+        private InputVariant _selectedInputVariant;
+        private InputVariant SelectedInputVariant
+        {
+            get => _selectedInputVariant;
+            set
+            {
+                _selectedInputVariant = value;
+                if (_selectedInputVariant == InputVariant.ReadOnly)
+                    _editable = false;
+                else
+                    _editable = true;
+            }
+        }
+        private bool _editable = false;
 
         [Inject]
         protected IFactory<double> RepositoryFactory { get; set; }
@@ -35,6 +49,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
             SolveCommand = new LambdaCommand(OnSolveCommandExecuted, CanSolveCommandExecute);
             RestoreSystemCommand = new LambdaCommand(OnRestoreSystemCommandExecuted, CanRestoreSystemCommandExecute);
             SaveSystemCommand = new LambdaCommand(OnSaveSystemCommandExecuted, CanSaveSystemCommandExecute);
+            AcceptMatrixSizeCommand = new LambdaCommand(OnAcceptMatrixSizeCommandExecuted, CanAcceptMatrixSizeCommandExecute);
         }
 
         #region ClearMatrixCommand
@@ -131,5 +146,28 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         }
         private bool CanSaveSystemCommandExecute(object p) => true;
         #endregion
+
+        #region AcceptMatrixSizeCommand
+        public ICommand AcceptMatrixSizeCommand { get; }
+        private void OnAcceptMatrixSizeCommandExecuted(object p)
+        {
+            try
+            {
+                
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
+                StateHasChanged();
+            }
+        }
+        private bool CanAcceptMatrixSizeCommandExecute(object p) => true;
+        #endregion
+    }
+
+    public enum InputVariant
+    {
+        Edit, ReadOnly
     }
 }
