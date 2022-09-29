@@ -1,5 +1,6 @@
 ﻿using CalculationMethods.Core.Entities;
 using CalculationMethods.Core.Services.Repositories;
+using CalculationMethods.Infrastructure.Services.Repositories.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,10 +39,5 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
         }
     }
 
-    public class VectorFileOptions
-    {
-        string OpenTag { get; set; }
-        string CloseTag { get; set; }
-
-    }
+    
 }

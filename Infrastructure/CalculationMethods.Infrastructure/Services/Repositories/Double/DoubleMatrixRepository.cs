@@ -1,6 +1,7 @@
 ﻿using CalculationMethods.Core.Entities;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Infrastructure.Entities.Double;
+using CalculationMethods.Infrastructure.Services.Repositories.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;

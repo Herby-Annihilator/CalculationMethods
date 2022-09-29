@@ -3,6 +3,7 @@ using CalculationMethods.Core.Services.Dialogs;
 using CalculationMethods.Core.Services.Factories.Base;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Infrastructure.Entities.Double;
+using CalculationMethods.Infrastructure.Entities.String;
 using CalculationMethods.Presentation.Blazor.Infrastructure.Commands;
 using CalculationMethods.Presentation.Blazor.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private IMatrix<double> _reversedMatrix;
         private IVector<double> _vectorB;
         private IVector<double> _solutionVector;
+        private IVector<string> _variablesVector;
         private InputVariant _selectedInputVariant = InputVariant.Edit;
         private InputVariant SelectedInputVariant
         {
@@ -160,6 +162,11 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 _matrix = _matrix.ChangeSize(_matrixSize);
                 _vectorB = _vectorB.ChangeSize(_matrixSize);
                 _solutionVector = _solutionVector.ChangeSize(_matrixSize);
+                _variablesVector = new StringVector(_matrixSize);
+                for (int i = 0; i < _matrixSize; i++)
+                {
+                    _variablesVector[i] = $"x{i + 1}";
+                }
 
                 _isSolutionVisible = false;
 

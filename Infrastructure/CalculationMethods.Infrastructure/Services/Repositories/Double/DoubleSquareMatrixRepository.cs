@@ -1,6 +1,7 @@
 ﻿using CalculationMethods.Core.Entities;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Infrastructure.Entities.Double;
+using CalculationMethods.Infrastructure.Services.Repositories.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +53,5 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
         public bool Update(ISquareMatrix<double> matrix) => _repository.Update(matrix);
     }
 
-    public class MatrixFromFileOptions
-    {
-        public string OpenTag { get; set; }
-        public string CloseTag { get; set; }
-        public string[] Delimiters { get; set; }
-    }
+    
 }
