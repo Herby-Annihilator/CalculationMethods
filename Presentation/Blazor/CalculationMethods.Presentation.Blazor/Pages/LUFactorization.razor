@@ -23,16 +23,16 @@
         <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSystemCommand">Восстановить все</MudButton>       
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить матрицу</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить матрицу</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveMatrixCommand">Сохранить матрицу</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreMatrixCommand">Восстановить матрицу</MudButton>
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить вектор</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить вектор</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSolutionVectorCommand">Сохранить вектор</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSolutionVectorCommand">Восстановить вектор</MudButton>
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить правую часть</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Восстановить правую часть</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveVectorCommand">Сохранить правую часть</MudButton>
+        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreVectorCommand">Восстановить правую часть</MudButton>
     </MudItem>  
 </MudGrid>
 
@@ -40,7 +40,7 @@
     <MudItem xs="3">
         <MudTextField Variant="MudBlazor.Variant.Outlined"  Label="Размерность" @bind-Value="_matrixSize"/>
     </MudItem>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary">Применить</MudButton>
+    <MudButton Variant="Variant.Filled" Command="AcceptMatrixSizeCommand" Color="Color.Primary">Применить</MudButton>
     <MudRadioGroup @bind-SelectedOption="SelectedInputVariant">
         <MudRadio Option="InputVariant.Edit" Color="Color.Primary">Редактировать</MudRadio>
         <MudRadio Option="InputVariant.ReadOnly" Color="Color.Primary">Только для чтения</MudRadio>
