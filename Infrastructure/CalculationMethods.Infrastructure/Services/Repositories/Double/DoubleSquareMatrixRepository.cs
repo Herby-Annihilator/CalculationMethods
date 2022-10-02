@@ -14,13 +14,13 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
     {
         protected string fileName;
         protected MatrixFromFileOptions options;
-        private DoubleSquareMatrixRepository _repository;
+        private DoubleMatrixRepository _repository;
 
         public DoubleSquareMatrixRepository(string fileName, MatrixFromFileOptions options)
         {
             this.fileName = fileName;
             this.options = options;
-            _repository = new DoubleSquareMatrixRepository(fileName, options);
+            _repository = new DoubleMatrixRepository(fileName, options);
         }
 
         public bool Delete(ISquareMatrix<double> matrix)

@@ -2,6 +2,7 @@
 using CalculationMethods.Core.Services.Factories;
 using CalculationMethods.Core.Services.Repositories;
 using CalculationMethods.Infrastructure.Services.Repositories.Double;
+using CalculationMethods.Infrastructure.Services.Repositories.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;

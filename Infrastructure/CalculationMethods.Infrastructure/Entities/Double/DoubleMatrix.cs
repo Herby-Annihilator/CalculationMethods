@@ -1,4 +1,6 @@
 ﻿using CalculationMethods.Core.Entities;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,12 @@ namespace CalculationMethods.Infrastructure.Entities.Double
         {
             RowsCount = rowsCount;
             ColsCount = colsCount;
+            _matrix = DenseMatrix.Create(RowsCount, ColsCount, 0);
         }
 
-        public double this[int row, int column] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private Matrix _matrix;
+
+        public double this[int row, int column] { get => _matrix[row, column]; set => _matrix[row, column] = value; }
 
         public int RowsCount { get; }
 
@@ -23,22 +28,31 @@ namespace CalculationMethods.Infrastructure.Entities.Double
 
         public double ConditionNumber()
         {
-            throw new NotImplementedException();
+            return _matrix.ConditionNumber();
         }
 
         public double Determinant()
         {
-            throw new NotImplementedException();
+            return _matrix.Determinant();
         }
 
         public IMatrix<double> Inverse()
         {
-            throw new NotImplementedException();
+            Matrix<double> inversed = _matrix.Inverse();
+            DoubleMatrix result = new DoubleMatrix(RowsCount, ColsCount);
+            for (int i = 0; i < inversed.RowCount; i++)
+            {
+                for (int j = 0; j < inversed.ColumnCount; j++)
+                {
+                    result[i, j] = inversed[i, j];
+                }
+            }
+            return result;
         }
 
         public double Norm()
         {
-            throw new NotImplementedException();
+            return _matrix.L1Norm();
         }
     }
 }

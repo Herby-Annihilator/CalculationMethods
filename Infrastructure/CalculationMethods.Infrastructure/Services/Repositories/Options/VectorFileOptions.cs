@@ -10,6 +10,6 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Options
     {
         public string OpenTag { get; set; }
         public string CloseTag { get; set; }
-        public string Delimeter { get; set; }
+        public string Delimiter { get; set; }
     }
 }

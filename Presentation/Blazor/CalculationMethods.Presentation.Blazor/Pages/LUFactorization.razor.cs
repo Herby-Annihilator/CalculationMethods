@@ -44,6 +44,8 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         [Inject]
         protected IFactory<double> RepositoryFactory { get; set; }
         [Inject]
+        protected IFactory<string> StringRepositoryFactory { get; set; }
+        [Inject]
         protected IConfiguration Configuration { get; set; }
 
         public LUFactorization()
@@ -56,6 +58,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
             SaveVectorCommand = new LambdaCommand(OnSaveVectorCommandExecuted, CanSaveVectorCommandExecute);
             SaveMatrixCommand = new LambdaCommand(OnSaveMatrixCommandExecuted, CanSaveMatrixCommandExecute);
             SaveSolutionVectorCommand = new LambdaCommand(OnSaveSolutionVectorCommandExecuted, CanSaveSolutionVectorCommandExecute);
+            RestoreMatrixCommand = new LambdaCommand(OnRestoreMatrixCommandExecuted, CanRestoreMatrixCommandExecute);
         }
 
         #region ClearMatrixCommand
@@ -109,11 +112,11 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);
-                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
-                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
+                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
+                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
+                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
                 _matrix = RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Get();
-                _solutionVector = RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Get();
+                _solutionVector = RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Get();
                 _vectorB = RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Get();
                 
                 snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
@@ -134,11 +137,11 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);
-                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
-                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
+                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
+                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
+                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
                 RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Save(_matrix);
-                RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Save(_solutionVector);
+                RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Save(_solutionVector);
                 RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Save(_vectorB);
                 
                 snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
@@ -187,9 +190,9 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);               
+                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";              
                 RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Save(_matrix);
-                snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
+                snackbar.Add($"Матрица сохранена: {_matrixFileName}", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -207,10 +210,10 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
+                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
                 RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Save(_vectorB);
 
-                snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
+                snackbar.Add($"Вектор сохранен: {_vectorFileName}", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -228,10 +231,10 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
-                RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Save(_solutionVector);
+                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
+                StringRepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Save(_variablesVector);
 
-                snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
+                snackbar.Add($"Вектор переменных сохранен: {_variablesVectorFileName}", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -249,10 +252,10 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _matrixFileName = Path.Combine(Environment.CurrentDirectory, Configuration["matrix"]);
+                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
                 _matrix = RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Get();
 
-                snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
+                snackbar.Add("Матрица восстановлена", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -270,10 +273,10 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _vectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["vector"]);
+                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
                 _vectorB = RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Get();
 
-                snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
+                snackbar.Add("Вектор восстановлен", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -291,10 +294,10 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _solutionVectorFileName = Path.Combine(Environment.CurrentDirectory, Configuration["solutionVector"]);
-                _solutionVector = RepositoryFactory.FileRepositoryFactory(_solutionVectorFileName).CreateVectorRepository().Get();
+                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
+                _solutionVector = RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Get();
 
-                snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
+                snackbar.Add("Вектор переменных восстановлен", MudBlazor.Severity.Info);
                 StateHasChanged();
             }
             catch (Exception ex)

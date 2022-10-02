@@ -12,19 +12,19 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
     {
         public bool Delete(IMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public IMatrix<double> Get() => new FakeDoubleSquareMatrixRepository().Get();
 
         public void Save(IMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool Update(IMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

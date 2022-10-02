@@ -13,7 +13,7 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
     {
         public bool Delete(ISquareMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public ISquareMatrix<double> Get()
@@ -32,12 +32,12 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
 
         public void Save(ISquareMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool Update(ISquareMatrix<double> matrix)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

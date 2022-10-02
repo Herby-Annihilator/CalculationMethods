@@ -29,6 +29,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-builder.Services.AddScoped<IFactory<double>, DefaultFactory>();
+builder.Services.AddScoped<IFactory<double>, DoubleFactory>();
+builder.Services.AddScoped<IFactory<string>, StringFactory>();
 
 await builder.Build().RunAsync();

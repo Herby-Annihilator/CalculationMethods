@@ -13,7 +13,7 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
     {
         public bool Delete(IVector<double> vector)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public IVector<double> Get()
@@ -29,12 +29,12 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Double
 
         public void Save(IVector<double> vector)
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool Update(IVector<double> vector)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

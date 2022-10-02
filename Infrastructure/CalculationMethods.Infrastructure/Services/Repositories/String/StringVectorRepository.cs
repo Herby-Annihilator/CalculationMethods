@@ -60,7 +60,7 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.String
                     do
                     {
                         buffer = reader.ReadLine();
-                        values = buffer.Split(_options.Delimeter, StringSplitOptions.RemoveEmptyEntries);
+                        values = buffer.Split(_options.Delimiter, StringSplitOptions.RemoveEmptyEntries);
                         tmp.AddRange(values);
                     } while (buffer != null && buffer != _options.CloseTag);
                     if (buffer == null)
@@ -80,7 +80,7 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.String
 
         public void Save(IVector<string> vector)
         {
-            int size = vector.Size * (1 + _options.Delimeter.Length) + _options.OpenTag.Length 
+            int size = vector.Size * (1 + _options.Delimiter.Length) + _options.OpenTag.Length 
                 + _options.CloseTag.Length + 4;
             StringBuilder builder = new StringBuilder(size);
             builder.Append(_options.OpenTag + "\r\n");
