@@ -11,48 +11,22 @@ namespace CalculationMethods.Infrastructure.Services.Repositories.Web
 {
     public class WebMatrixRepository<TElement> : IMatrixRepository<IMatrix<TElement>, TElement>
     {
-        protected HttpClient Client { get; set; }
         protected string FileName { get; set; }
         protected string ApiPath { get; }
+        private WebRepository<IMatrix<TElement>> repository;
         public WebMatrixRepository(HttpClient client, string fileName)
         {
-            Client = client;
             FileName = fileName;
             ApiPath = $"matrix/{FileName}";
+            repository = new WebRepository<IMatrix<TElement>>(ApiPath, client);
         }
 
-        public void Save(IMatrix<TElement> matrix)
-        {
-            Client.PostAsJsonAsync(ApiPath, matrix).Result.EnsureSuccessStatusCode();
-        }
+        public void Save(IMatrix<TElement> matrix) => repository.Save(matrix);
 
-        public IMatrix<TElement> Get()
-        {
-            return Client.GetFromJsonAsync<IMatrix<TElement>>(ApiPath).Result;
-        }
+        public IMatrix<TElement> Get() => repository.Get();
 
-        public bool Update(IMatrix<TElement> matrix)
-        {
-            return Client.PutAsJsonAsync(ApiPath, matrix)
-                .Result
-                .EnsureSuccessStatusCode()
-                .Content
-                .ReadFromJsonAsync<bool>()
-                .Result;
-        }
+        public bool Update(IMatrix<TElement> matrix) => repository.Update(matrix);
 
-        public bool Delete(IMatrix<TElement> matrix)
-        {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, ApiPath)
-            {
-                Content = JsonContent.Create(matrix),
-            };
-            return Client.SendAsync(request)
-                .Result
-                .EnsureSuccessStatusCode()
-                .Content
-                .ReadFromJsonAsync<bool>()
-                .Result;
-        }
+        public bool Delete(IMatrix<TElement> matrix) => repository.Delete(matrix);
     }
 }
