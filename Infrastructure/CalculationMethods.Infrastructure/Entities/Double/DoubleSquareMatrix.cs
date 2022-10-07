@@ -67,12 +67,13 @@ namespace CalculationMethods.Infrastructure.Entities.Double
             double sum;
             for (int i = 0; i < Size; i++)
             {
-                sum = 0;
+                
                 for (int j = 0; j < Size; j++)
                 {
+                    sum = 0;
                     if (i <= j)
                     {
-                        for (int k = 0; k < i - 1; k++)
+                        for (int k = 0; k < i; k++)
                         {
                             sum += _lMatrix[i, k] * _uMatrix[k, j];
                         }
@@ -80,7 +81,7 @@ namespace CalculationMethods.Infrastructure.Entities.Double
                     }
                     else
                     {
-                        for (int k = 0; k < j - 1; k++)
+                        for (int k = 0; k < j; k++)
                         {
                             sum += _lMatrix[i, k] * _uMatrix[k, j];
                         }
@@ -119,39 +120,17 @@ namespace CalculationMethods.Infrastructure.Entities.Double
             if (_matrixChanged)
                 GetLUFactorization();
             DoubleSquareMatrix x = new DoubleSquareMatrix(Size);
-            double sum;
-            for (int n = Size - 1; n >= 0; n--)
+            DoubleVector b = new DoubleVector(Size);
+            IVector<double> tmp;
+            for (int i = 0; i < Size; i++)
             {
-                for (int j = n; j >= 0; j--)
+                b[i] = 1;
+                tmp = Solve(b);
+                for (int j = 0; j < Size; j++)
                 {
-                    sum = 0;
-                    for (int k = j + 1; k < Size; k++)
-                    {
-                        sum += _uMatrix[j, k] * x[k, j];
-                    }
-                    x[j, j] = 1 / _uMatrix[j, j] * (1 - sum);
-                    for (int i = n; i >= 0; i--)
-                    {
-                        sum = 0;
-                        for (int k = i + 1; k < Size; k++)
-                        {
-                            sum += _uMatrix[i, k] * x[k, j];
-                        }
-                        x[i, j] = -(sum / _uMatrix[i, i]);
-                    }
+                    x[j, i] = tmp[j];
                 }
-                for (int i = n; i >= 0; i--)
-                {
-                    for (int j = n - 1; j >= 0; j--)
-                    {
-                        sum = 0;
-                        for (int k = j + 1; k < n; k++)
-                        {
-                            sum += x[i, k] * _lMatrix[k, j];
-                        }
-                        x[i, j] = -sum;
-                    }
-                }
+                b[i] = 0;
             }
             return x;
         }
@@ -186,15 +165,19 @@ namespace CalculationMethods.Infrastructure.Entities.Double
 
         public virtual double Norm()
         {
-            double[] maximums = new double[Size];
+            double max = -1;
+            double tmp;
             for (int i = 0; i < Size; i++)
             {
+                tmp = 0;
                 for (int j = 0; j < Size; j++)
                 {
-                    maximums[i] += Math.Abs(_matrix[i, j]);
+                    tmp += Math.Abs(_matrix[i, j]);
                 }
+                if (tmp > max)
+                    max = tmp;
             }
-            return maximums.Max();
+            return max;
         }
 
         public double ConditionNumber() => Norm() * Inverse().Norm();
