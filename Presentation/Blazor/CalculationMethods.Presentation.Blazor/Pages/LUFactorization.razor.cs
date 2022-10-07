@@ -19,6 +19,19 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private double _norm;
         private double _conditionNumber;
         private double _determinant;
+
+        private double[,] _templateMatrix = new double[,]
+        {
+            { 5, 7, 6, 5 },
+            { 7, 10, 8, 7 },
+            { 6, 8, 10, 9 },
+            { 5, 7, 9, 10 }
+        };
+
+        private double[] _firstVectorB = new double[] { 23, 32, 33, 31};
+        private double[] _secondVectorB = new double[] { 23.01, 31.99, 32.99, 31.01};
+        private double[] _thirdVectorB = new double[] { 23.1, 31.9, 32.9, 31.1};
+
         private ISquareMatrix<double> _uMatrix;
         private ISquareMatrix<double> _lMatrix;
         private ISquareMatrix<double> _matrix;
@@ -26,7 +39,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private IVector<double> _vectorB;
         private IVector<double> _solutionVector;
         private IVector<string> _variablesVector;
-        private InputVariant _selectedInputVariant = InputVariant.Edit;
+        private InputVariant _selectedInputVariant = InputVariant.ReadOnly;
         private InputVariant SelectedInputVariant
         {
             get => _selectedInputVariant;
@@ -39,26 +52,15 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                     _editable = true;
             }
         }
-        private bool _editable = true;
-
-        [Inject]
-        protected IFactory<double> RepositoryFactory { get; set; }
-        [Inject]
-        protected IFactory<string> StringRepositoryFactory { get; set; }
-        [Inject]
-        protected IConfiguration Configuration { get; set; }
+        private bool _editable = false;
 
         public LUFactorization()
         {
             ClearMatrixCommand = new LambdaCommand(OnClearMatrixCommandExecuted, CanClearMatrixCommandExecute);
             SolveCommand = new LambdaCommand(OnSolveCommandExecuted, CanSolveCommandExecute);
-            RestoreSystemCommand = new LambdaCommand(OnRestoreSystemCommandExecuted, CanRestoreSystemCommandExecute);
-            SaveSystemCommand = new LambdaCommand(OnSaveSystemCommandExecuted, CanSaveSystemCommandExecute);
-            AcceptMatrixSizeCommand = new LambdaCommand(OnAcceptMatrixSizeCommandExecuted, CanAcceptMatrixSizeCommandExecute);
-            SaveVectorCommand = new LambdaCommand(OnSaveVectorCommandExecuted, CanSaveVectorCommandExecute);
-            SaveMatrixCommand = new LambdaCommand(OnSaveMatrixCommandExecuted, CanSaveMatrixCommandExecute);
-            SaveSolutionVectorCommand = new LambdaCommand(OnSaveSolutionVectorCommandExecuted, CanSaveSolutionVectorCommandExecute);
+            AcceptMatrixSizeCommand = new LambdaCommand(OnAcceptMatrixSizeCommandExecuted, CanAcceptMatrixSizeCommandExecute);           
             RestoreMatrixCommand = new LambdaCommand(OnRestoreMatrixCommandExecuted, CanRestoreMatrixCommandExecute);
+            RestoreVectorCommand = new LambdaCommand(OnRestoreVectorCommandExecuted, CanRestoreVectorCommandExecute);
         }
 
         #region ClearMatrixCommand
@@ -90,6 +92,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 _determinant = _matrix.Determinant();
                 _norm = _matrix.Norm();
                 _reversedMatrix = _matrix.Inverse();
+                _conditionNumber = _matrix.ConditionNumber();
 
                 _isSolutionVisible = true;
                 
@@ -105,57 +108,6 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private bool CanSolveCommandExecute(object p) => true;
         #endregion
 
-
-        #region RestoreSystemCommand
-        public ICommand RestoreSystemCommand { get; }
-        private void OnRestoreSystemCommandExecuted(object p)
-        {
-            try
-            {
-                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
-                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
-                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
-                _matrix = RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Get();
-                _solutionVector = RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Get();
-                _vectorB = RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Get();
-                
-                snackbar.Add("Система восстановлена", MudBlazor.Severity.Info);
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
-            }
-        }
-        private bool CanRestoreSystemCommandExecute(object p) => true;
-        #endregion
-
-        #region SaveSystemCommand
-        public ICommand SaveSystemCommand { get; }
-        private void OnSaveSystemCommandExecuted(object p)
-        {
-            try
-            {
-                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
-                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
-                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
-                RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Save(_matrix);
-                RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Save(_solutionVector);
-                RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Save(_vectorB);
-                
-                snackbar.Add("Система сохранена", MudBlazor.Severity.Info);
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
-            }
-        }
-        private bool CanSaveSystemCommandExecute(object p) => true;
-        #endregion
-
         #region AcceptMatrixSizeCommand
         public ICommand AcceptMatrixSizeCommand { get; }
         private void OnAcceptMatrixSizeCommandExecuted(object p)
@@ -165,11 +117,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 _matrix = _matrix.ChangeSize(_matrixSize);
                 _vectorB = _vectorB.ChangeSize(_matrixSize);
                 _solutionVector = _solutionVector.ChangeSize(_matrixSize);
-                _variablesVector = new StringVector(_matrixSize);
-                for (int i = 0; i < _matrixSize; i++)
-                {
-                    _variablesVector[i] = $"x{i + 1}";
-                }
+                InitVariablesVector();
 
                 _isSolutionVisible = false;
 
@@ -184,76 +132,13 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private bool CanAcceptMatrixSizeCommandExecute(object p) => true;
         #endregion
 
-        #region SaveMatrixCommand
-        public ICommand SaveMatrixCommand { get; }
-        private void OnSaveMatrixCommandExecuted(object p)
-        {
-            try
-            {
-                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";              
-                RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Save(_matrix);
-                snackbar.Add($"Матрица сохранена: {_matrixFileName}", MudBlazor.Severity.Info);
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
-            }
-        }
-        private bool CanSaveMatrixCommandExecute(object p) => true;
-        #endregion
-
-        #region SaveVectorCommand
-        public ICommand SaveVectorCommand { get; }
-        private void OnSaveVectorCommandExecuted(object p)
-        {
-            try
-            {
-                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
-                RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Save(_vectorB);
-
-                snackbar.Add($"Вектор сохранен: {_vectorFileName}", MudBlazor.Severity.Info);
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
-            }
-        }
-        private bool CanSaveVectorCommandExecute(object p) => true;
-        #endregion
-
-        #region SaveSolutionVectorCommand
-        public ICommand SaveSolutionVectorCommand { get; }
-        private void OnSaveSolutionVectorCommandExecuted(object p)
-        {
-            try
-            {
-                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
-                StringRepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Save(_variablesVector);
-
-                snackbar.Add($"Вектор переменных сохранен: {_variablesVectorFileName}", MudBlazor.Severity.Info);
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
-            }
-        }
-        private bool CanSaveSolutionVectorCommandExecute(object p) => true;
-        #endregion
-
         #region RestoreMatrixCommand
         public ICommand RestoreMatrixCommand { get; }
         private void OnRestoreMatrixCommandExecuted(object p)
         {
             try
             {
-                string _matrixFileName = $"{Configuration["rootPath"]}{Configuration["matrix"]}";
-                _matrix = RepositoryFactory.FileRepositoryFactory(_matrixFileName).CreateSquareMatrixRepository().Get();
+                _matrix = FromValues(_templateMatrix);
 
                 snackbar.Add("Матрица восстановлена", MudBlazor.Severity.Info);
                 StateHasChanged();
@@ -273,11 +158,25 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         {
             try
             {
-                string _vectorFileName = $"{Configuration["rootPath"]}{Configuration["vector"]}";
-                _vectorB = RepositoryFactory.FileRepositoryFactory(_vectorFileName).CreateVectorRepository().Get();
-
-                snackbar.Add("Вектор восстановлен", MudBlazor.Severity.Info);
-                StateHasChanged();
+                if (p is string variant)
+                {
+                    if (variant == "first")
+                    {
+                        _vectorB = FromValues(_firstVectorB);
+                    }
+                    else if (variant == "second")
+                    {
+                        _vectorB = FromValues(_secondVectorB);
+                    }
+                    else if (variant == "third")
+                    {
+                        _vectorB = FromValues(_thirdVectorB);
+                    }
+                    else
+                        throw new ArgumentException($"Fucking command parameter: '{variant}'");
+                    snackbar.Add("Вектор восстановлен", MudBlazor.Severity.Info);
+                    StateHasChanged();
+                }               
             }
             catch (Exception ex)
             {
@@ -288,33 +187,53 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private bool CanRestoreVectorCommandExecute(object p) => true;
         #endregion
 
-        #region RestoreSolutionVectorCommand
-        public ICommand RestoreSolutionVectorCommand { get; }
-        private void OnRestoreSolutionVectorCommandExecuted(object p)
+        private ISquareMatrix<double> FromValues(double[,] values)
         {
-            try
+            int rows = values.GetLength(0);
+            int cols = values.GetLength(1);
+            if (cols != rows)
+                throw new ArgumentException($"Число строк: ({rows}) != числу столбцов ({cols})");
+            DoubleSquareMatrix result = new DoubleSquareMatrix(rows);
+            for (int i = 0; i < rows; i++)
             {
-                string _variablesVectorFileName = $"{Configuration["rootPath"]}{Configuration["variablesVector"]}";
-                _solutionVector = RepositoryFactory.FileRepositoryFactory(_variablesVectorFileName).CreateVectorRepository().Get();
-
-                snackbar.Add("Вектор переменных восстановлен", MudBlazor.Severity.Info);
-                StateHasChanged();
+                for (int j = 0; j < cols; j++)
+                {
+                    result[i, j] = values[i, j];
+                }
             }
-            catch (Exception ex)
+            return result;
+        }
+
+        private IVector<double> FromValues(double[] values)
+        {
+            int length = values.Length;
+            DoubleVector result = new DoubleVector(length);
+            for (int i = 0; i < length; i++)
             {
-                snackbar.Add(ex.Message, MudBlazor.Severity.Error);
-                StateHasChanged();
+                result[i] = values[i];
+            }
+            return result;
+        }
+
+        private void InitVariablesVector()
+        {
+            _variablesVector = new StringVector(_matrixSize);
+            for (int i = 0; i < _matrixSize; i++)
+            {
+                _variablesVector[i] = $"x{i + 1}";
             }
         }
-        private bool CanRestoreSolutionVectorCommandExecute(object p) => true;
-        #endregion
 
         protected override void OnInitialized()
         {
-            _matrix = new DoubleSquareMatrix(_matrixSize);
-            _vectorB = new DoubleVector(_matrixSize);
+            _matrixSize = _templateMatrix.GetLength(0);
+            _matrix = FromValues(_templateMatrix);
+            _vectorB = FromValues(_firstVectorB);
             _solutionVector = new DoubleVector(_matrixSize);
+            InitVariablesVector();
         }
+
+        private double Round(double value) => Math.Round(value, 5);
     }
 
     public enum InputVariant

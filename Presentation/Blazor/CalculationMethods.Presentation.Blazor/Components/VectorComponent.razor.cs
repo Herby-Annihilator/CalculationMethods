@@ -22,6 +22,9 @@ namespace CalculationMethods.Presentation.Blazor.Components
 
         [Parameter]
         public int VectorXS { get; set; }
+
+        [Parameter]
+        public Func<T, T> Display { get; set; } = (value) => value;
     }
 
     public enum DisplayMode

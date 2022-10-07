@@ -25,5 +25,7 @@ namespace CalculationMethods.Presentation.Blazor.Components
             _nameXS = 1;
             _matrixXS = 11;
         }
+        [Parameter]
+        public Func<T, T> Display { get; set; } = (value) => value;
     }
 }

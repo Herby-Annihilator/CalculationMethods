@@ -19,20 +19,25 @@
 
 <MudGrid Justify="Justify.SpaceBetween" Class="mt-5">
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSystemCommand">Сохранить все</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSystemCommand">Восстановить все</MudButton>       
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreMatrixCommand">Загрузить колхозную матрицу</MudButton>       
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveMatrixCommand">Сохранить матрицу</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreMatrixCommand">Восстановить матрицу</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreVectorCommand"
+        CommandParameter="@("first")">
+            Загрузить колхоз-вектор 1
+        </MudButton>        
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveSolutionVectorCommand">Сохранить вектор</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreSolutionVectorCommand">Восстановить вектор</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreVectorCommand"
+        CommandParameter="@("second")">
+            Загрузить колхоз-вектор 2
+        </MudButton>       
     </MudItem>
     <MudItem xs="3" Class="d-flex flex-column">
-        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="SaveVectorCommand">Сохранить правую часть</MudButton>
-        <MudButton Class="mt-3" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreVectorCommand">Восстановить правую часть</MudButton>
+        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" Command="RestoreVectorCommand"
+        CommandParameter="@("third")">
+            Загрузить колхоз-вектор 3
+        </MudButton>       
     </MudItem>  
 </MudGrid>
 
@@ -56,13 +61,13 @@
         <MudText Typo="Typo.h4" Align="Align.Center"> * </MudText>
     </MudItem>
     <MudItem xs="2" Class="justify-content-center align-content-center">
-        <VectorComponent Mode="DisplayMode.Vertical" Vector="_variablesVector" VectorXS="4" Editable="false"></VectorComponent>
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_variablesVector" VectorXS="6" Editable="false"></VectorComponent>
     </MudItem>
     <MudItem xs="1" Class="align-self-center">
         <MudText Typo="Typo.h4" Align="Align.Center"> = </MudText>
     </MudItem>
     <MudItem Class="justify-content-center align-content-center" xs="2">
-        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vectorB" VectorXS="4" Editable="_editable"></VectorComponent>
+        <VectorComponent Mode="DisplayMode.Vertical" Vector="_vectorB" VectorXS="6" Editable="_editable"></VectorComponent>
     </MudItem>
 </MudGrid>
 
@@ -81,22 +86,22 @@
     <MudText GutterBottom="true" Typo="Typo.h4" Class="mt-5">Решение</MudText>
     <MudGrid>
         <MudItem xs="5">
-            <MatrixComponent Matrix="_uMatrix" Name="U" NameXS="2" MatrixXS="10" Editable="false"/>
+            <MatrixComponent Matrix="_uMatrix" Name="U" NameXS="2" MatrixXS="10" Editable="false" Display="Round"/>
         </MudItem>
         <MudItem xs="2"/>
         <MudItem xs="5">
-            <MatrixComponent Matrix="_lMatrix" Name="L" Editable="false" NameXS="2" MatrixXS="10"/>
+            <MatrixComponent Matrix="_lMatrix" Name="L" Editable="false" NameXS="2" MatrixXS="10" Display="Round"/>
         </MudItem>
     </MudGrid>
 
     <MudGrid>
         <MudItem xs="8">
-            <MatrixComponent Matrix="_reversedMatrix" Name="Обратная матрица" Editable="false" NameXS="6" MatrixXS="6"/>
+            <MatrixComponent Matrix="_reversedMatrix" Name="Обратная матрица" Editable="false" NameXS="6" MatrixXS="6" Display="Round"/>
         </MudItem>
         <MudItem xs="1">
         </MudItem>
         <MudItem xs="3">
-            <VectorComponent Vector="_solutionVector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false"/>
+            <VectorComponent Vector="_solutionVector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false" Display="Round"/>
         </MudItem>
     </MudGrid>
 
