@@ -50,5 +50,18 @@ namespace CalculationMethods.Presentation.Blazor.Infrastructure.Extensions
             }
             return result;
         }
+
+        public static double Max(this IVector<double> vector, Func<double, double> formatValue)
+        {
+            double max = formatValue(vector[0]);
+            double tmp;
+            for (int i = 1; i < vector.Size; i++)
+            {
+                tmp = formatValue(vector[i]);
+                if (tmp > max)
+                    max = tmp;
+            }
+            return max;
+        }
     }
 }

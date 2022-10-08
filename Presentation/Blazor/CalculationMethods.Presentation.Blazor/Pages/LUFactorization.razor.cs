@@ -19,6 +19,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private double _norm;
         private double _conditionNumber;
         private double _determinant;
+        private double _residualsAbs;
 
         private double[,] _templateMatrix = new double[,]
         {
@@ -39,6 +40,7 @@ namespace CalculationMethods.Presentation.Blazor.Pages
         private IVector<double> _vectorB;
         private IVector<double> _solutionVector;
         private IVector<string> _variablesVector;
+        private IVector<double> _residualsVector;
         private InputVariant _selectedInputVariant = InputVariant.ReadOnly;
         private InputVariant SelectedInputVariant
         {
@@ -93,6 +95,8 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 _norm = _matrix.Norm();
                 _reversedMatrix = _matrix.Inverse();
                 _conditionNumber = _matrix.ConditionNumber();
+                _residualsVector = GetResidualsVector();
+                _residualsAbs = _residualsVector.Max((value) => Math.Abs(value));
 
                 _isSolutionVisible = true;
                 
@@ -213,6 +217,20 @@ namespace CalculationMethods.Presentation.Blazor.Pages
                 result[i] = values[i];
             }
             return result;
+        }
+
+        private IVector<double> GetResidualsVector()
+        {
+            IVector<double> residuals = new DoubleVector(_matrixSize);
+            for (int i = 0; i < _matrixSize; i++)
+            {
+                for (int j = 0; j < _matrixSize; j++)
+                {
+                    residuals[i] += _matrix[i, j] * _solutionVector[j];
+                }
+                residuals[i] -= _vectorB[i];
+            }
+            return residuals;
         }
 
         private void InitVariablesVector()

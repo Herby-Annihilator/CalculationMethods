@@ -94,31 +94,37 @@
         </MudItem>
     </MudGrid>
 
-    <MudGrid>
-        <MudItem xs="8">
+    <MudGrid Justify="Justify.SpaceBetween">
+        <MudItem xs="6">
             <MatrixComponent Matrix="_reversedMatrix" Name="Обратная матрица" Editable="false" NameXS="6" MatrixXS="6" Display="Round"/>
-        </MudItem>
-        <MudItem xs="1">
         </MudItem>
         <MudItem xs="3">
             <VectorComponent Vector="_solutionVector" Name="Ответ" VectorXS="4" NameXS="5" Mode="DisplayMode.Vertical" Editable="false" Display="Round"/>
         </MudItem>
+        <MudItem xs="3">
+            <VectorComponent Vector="_residualsVector" Name="Невязки" VectorXS="4" NameXS="6" Mode="DisplayMode.Vertical" Editable="false" Display="Round"/>
+        </MudItem>
     </MudGrid>
 
     <MudGrid Class="mt-3 mb-5">
-        <MudItem xs="4">
+        <MudItem xs="3">
             <MudText GutterBottom="true">
                 Норма исходной матрицы = @_norm
             </MudText>
         </MudItem>
-        <MudItem xs="4">
+        <MudItem xs="3">
             <MudText GutterBottom="true">
                 Число обусловленности исходной матрицы = @_conditionNumber
             </MudText>
         </MudItem>
-        <MudItem xs="4">
+        <MudItem xs="3">
             <MudText GutterBottom="true">
                 Определитель исходной матрицы = @_determinant
+            </MudText>
+        </MudItem>
+        <MudItem xs="3">
+            <MudText GutterBottom="true">
+                Модуль невязки = @_residualsAbs
             </MudText>
         </MudItem>
     </MudGrid>
